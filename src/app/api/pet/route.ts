@@ -31,6 +31,7 @@ export async function POST(req: NextRequest,) {
         if(!user) {
             return NextResponse.json({message: 'User Not Found'}, {status: 404});
         }
+        
 
         const pet = new Pet({
             owner: user._id,

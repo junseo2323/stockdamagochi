@@ -1,9 +1,14 @@
-import Image from "next/image";
+"use client"
+
+import Command from '@/components/command';
+// app/page.jsx
+import Tamagochi from '@/components/Tamagochi'
 
 export default function Home() {
   return (
-   	<div>
-		Hello World!
-	</div>
+    <div>
+        
+        <Command />
+	 </div>
   );
 }
