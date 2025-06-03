@@ -2,8 +2,11 @@
 
 import { processCommand } from '@/lib/commandProcessor';
 import { useEffect, useState, useRef } from 'react';
+import {useAuth} from "@/contexts/AuthContext";
 
 export default function Command(props: {}) {
+    const {tamagochiSetting,tamagochiMessageSetting} = useAuth();
+
     const [answer, setAnswer] = useState("")
     const [responses, setResponses] = useState("")
     const inputRef = useRef<HTMLInputElement>(null);
@@ -24,7 +27,7 @@ export default function Command(props: {}) {
       e.preventDefault()
       if (!answer.trim()) return;
 
-      const response = processCommand(answer); // 명령 처리
+      const response = processCommand(answer, tamagochiSetting, tamagochiMessageSetting); // 명령 처리
       console.log('응답:', response); // 나중에 메시지로 출력
       setResponses(response)
       setAnswer('');
@@ -32,8 +35,8 @@ export default function Command(props: {}) {
     
     return(
         <div className="w-full bg-black absolute inset-0 top-[75vh] pt-2">
-            <p className="text-white flex w-screen">>
             <form onSubmit={onSubmit} className="w-screen">
+            <p className="text-white flex w-screen">>
               <input 
                   ref={inputRef}
                   onChange={handleChange}
@@ -42,8 +45,9 @@ export default function Command(props: {}) {
                   type='text'
                   value={answer}
               />
-            </form>
             </p>
+            </form>
+
             <p className='text-white'>{responses}</p>
         </div>
     )
@@ -51,6 +55,8 @@ export default function Command(props: {}) {
 
 /**
  * [명령어 모음]
- * 1. 다마고치 추가하기
- * 
+ * 1. 펫 추가
+ * 2. 펫 목록
+ * 3. 펫 정보
+ * 4. 펫 삭제
  */

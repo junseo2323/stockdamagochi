@@ -7,7 +7,7 @@ import Tamagochi from '@/components/Tamagochi'
 export default function Home() {
   return (
     <div>
-        
+        <Tamagochi />
         <Command />
 	 </div>
   );

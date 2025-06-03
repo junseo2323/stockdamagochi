@@ -1,5 +1,11 @@
+'use client';
 
-export async function processCommand(input: string): Promise<string> {
+export async function processCommand(input: string, tamagochiSetting: (ticker: string, emotion: string)=>void, tamagochiMessageSetting: (message: string) => void): Promise<string> {
+
+    if (input.match('메세지테스트')){
+      tamagochiMessageSetting("안녕하세요?");
+      return 'TEST';
+    }
 
     if (input.startsWith('펫 추가')) {
       const match = input.match(/^펫 추가\s+(\S+)\s+(\S+)\s+(\d+)\s+([\d.]+)$/);
@@ -59,6 +65,7 @@ export async function processCommand(input: string): Promise<string> {
     if (input.startsWith('펫 정보')){
         const match = input.match(/^펫 정보\s+(\S+)$/);
         if(match){
+          try{
             const [, nickname] = match;
             const res = await fetch('/api/pet')
     
@@ -82,6 +89,8 @@ export async function processCommand(input: string): Promise<string> {
             const data = await resss.json();
 
             const Pet = pets.pets.find((e: any) => e.nickname == nickname)
+            
+            tamagochiSetting( Pet.ticker, Pet.emotion); //다마고치 정보 셋팅 Context-API
 
             return [
               `🐶 이름: ${Pet.nickname}`,
@@ -92,6 +101,9 @@ export async function processCommand(input: string): Promise<string> {
               `💰 손익: ${profit}`,
               `😊 기분: ${Pet.emotion}`
             ].join('\n');
+          }catch(error) {
+            return `❌ 에러가 발생했어요 : ${error}`
+          }
     
         }
 
