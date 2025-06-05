@@ -10,13 +10,13 @@ const API_KEY = process.env.TWELVE_DATA_API_KEY;
 const BASE_URL = 'https://api.twelvedata.com/price';
 
 function getEmotionByRate(rate: number){
-    if(rate >= 10) return 'happy';
-    if(rate >= -5) return 'neutral';
-    return 'sad';
+    if(rate >= 10) return '😊 happy 상태';
+    if(rate >= -5) return '😐 감정 없음 상태 ';
+    return '😢 sad 상태 ';
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-    await connectToDatabase();
+export async function PATCH(req: NextRequest,{params}: {params: Promise<{ id: string }>}) {
+            await connectToDatabase();
             //로그인 여부 확인
             const cookieStore = await cookies(); 
             const token = cookieStore.get('token')?.value;
@@ -25,7 +25,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
                 return NextResponse.json({message: "UnAuthorized"}, {status: 401});
             }
 
-            const petId =  params.id;   
+            const petId = (await params).id
 
             try{
                 const decoded = verifyToken(token);
