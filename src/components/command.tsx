@@ -34,21 +34,26 @@ export default function Command(props: {}) {
     }
     
     return(
-        <div className="w-full bg-black absolute inset-0 top-[75vh] pt-2">
-            <form onSubmit={onSubmit} className="w-screen">
-            <p className="text-white flex w-screen">>
+        <div className="w-full absolute inset-0 top-[65vh] pt-2">
+            <div className='m-4 h-50 border-1 rounded-4xl border-solid border-black'>
+              <p className='text-black p-4'>{responses}</p>
+            </div>
+            <div className='flex justify-center items-center h-10'>
+            <form onSubmit={onSubmit} className="">
               <input 
                   ref={inputRef}
                   onChange={handleChange}
                   placeholder="명령어를 입력하세요"
-                  className="w-full h-7 text-white focus:ring-0 focus:outline-none"
+                  className="w-150 rounded-2xl h-12 pl-3 text-black border-1 focus:ring-0 focus:outline-none"
                   type='text'
                   value={answer}
               />
-            </p>
+              <button className='text-white border-1 border-solid w-15 h-12 rounded-2xl bg-[#593cff] ml-3'>
+                실행!
+              </button>
             </form>
-
-            <p className='text-white'>{responses}</p>
+            </div>
+            
         </div>
     )
 }

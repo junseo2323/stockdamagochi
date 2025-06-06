@@ -69,24 +69,6 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 	}, []);
 
 	
-/**나중에 에러 관련 블로그 글 작성하기!!!! */
-	useEffect(() => {
-		const interval = setInterval(async () => {
-		  try {
-			if (!tamagochiInfo?.ticker) return; // ticker 없으면 호출 안함
-
-			const res = await api.get('/news', { params: {ticker: tamagochiInfo?.ticker } });
-			const data = res.data
-			console.log(data)
-			if (!res.ok) return;
-	  	    setTamagochiMessager(data[0].title)
-		  } catch (err) {
-			console.error(err);
-		  }
-		}, 5000);
-	  
-		return () => clearInterval(interval);
-	  }, [tamagochiInfo]); //의존성 배열 추가로 useEffect가 해당 값 참조할 수 있도록 설정.
 	
 	const login = async (email: string, password: string) => {
 		await api.post("/auth/login", {email, password});
