@@ -4,6 +4,8 @@ import {useRouter} from "next/navigation";
 
 import {useAuth} from "@/contexts/AuthContext";
 import {useState,useEffect} from "react";
+import Tamagochi from "@/components/Tamagochi";
+import Command from "@/components/command";
 
 
 export default function Home() {
@@ -31,13 +33,11 @@ export default function Home() {
    	<div>
 		  {userinfo&&
 		  <>
-		  	  <p>홈 화면</p>
-			  <ul>
-				  <li>이름 : {userinfo.name}</li>
-				  <li>이메일 : {userinfo.email}</li>
-			  </ul>
-			  <button onClick={LogoutHandleEvent}>로그아웃</button>
-		  </>
+				<div>
+					<Tamagochi />
+					<Command />
+				</div>		 
+			 </>
 		  }
 	</div>
   );

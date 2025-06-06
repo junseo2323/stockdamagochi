@@ -19,7 +19,7 @@ export default function Login() {
   return (
    	<>
 	    <form onSubmit={handleSubmit} className="absolute flex flex-col bg-[#ffffff] w-1/3 h-1/2 top-[20%] left-[30%] p-10 shadow-2xl rounded-3xl">
-	        <p className="w-full text-xl font-bold text-cetner">SIGN IN</p>
+	        <p className="w-full text-xl font-bold text-cetner">로그인</p>
 			<div className="flex-2 pt-10">
 				<label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">email</label>
 				<input  type="text" id="email" 
@@ -33,7 +33,7 @@ export default function Login() {
 					className="border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"  required />
 			</div>
 		  <div className="flex-auto">
-		  	<button className="bg-[#000000] text-white rounded-2xl py-2 px-10">Sign In</button>
+		  	<button className="bg-[#000000] text-white rounded-2xl py-2 px-10">로그인</button>
 			<p className="mt-3">계정이 없으신가요? <Link href="/register" className="font-bold">회원가입</Link></p>
 		  </div>
 	    </form>
