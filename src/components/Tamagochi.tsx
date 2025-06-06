@@ -39,10 +39,24 @@ export default function Tamagochi(props: {message: string}) {
     return '/etc.png'
   }  
 
+  const ColorSetting = (emotion:string):string => {
+    console.log(emotion===tamagochiInfo?.emotion);
+    if(emotion === '😊 happy 상태'){
+      return 'bg-red-300';
+    }
+    if(emotion === '😐 감정 없음 상태 '){ //emotion 뒤에 의미없는 공백 저장된 것들 해결하기(어디서?문제가 됐는지도 파악하기)
+      return 'bg-gray-300';
+    }
+    if(emotion === '😢 sad 상태 '){
+      return 'bg-blue-300';
+    }
+    return 'bg-gray-300';
+  }
+
 
   return (
     <div className="flex justify-center items-center h-120">
-      <div className="bg-gray w-50 h-50 items-center grid bg-amber-100 border-1 drop-shadow-3xl rounded-4xl">
+      <div className={`w-50 h-50 items-center grid border-1 drop-shadow-3xl rounded-4xl ` + ColorSetting(tamagochiInfo?.emotion)}>
           <img src={ImageSetting(tamagochiInfo?.ticker)} width={64} className="m-auto" />
 					<p className="font-semibold text-xs text-center">{tamagochiInfo?.emotion}</p>
 					<p className="font-semibold text-xs text-center">{tamagochiMessage?.message}</p>
