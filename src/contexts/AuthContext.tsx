@@ -18,6 +18,9 @@ interface TamagochiType { //다마고치 메세지
 interface TamagochiInfoType { //다마고치 셋팅정보
 	ticker : string;
 	emotion : string;
+	nickname : string;
+	level : number;
+	rateofreturn: number;
 }
 
 interface AuthContextType {
@@ -30,7 +33,7 @@ interface AuthContextType {
 	register : (email: string, password: string, name: string) => Promise<void>;
 	logout : () => Promise<void>;
 	tamagochiMessageSetting : (message : string) => void;
-	tamagochiSetting : (ticker : string, emotion : string) => void;
+	tamagochiSetting : (ticker : string, emotion : string, nickname: string, level: number, avgBuyPrice: number) => void;
 }
 
 
@@ -54,6 +57,38 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 			setLoading(false);
 		}``
 	};
+
+	const calRateofreturn = async(avgPrice: number, ticker: string):Promise<number> => {
+		try{
+			const res = await api.get('/price?ticker='+ticker);
+			const nowPrice = res.data.price
+			const rate = (nowPrice-avgPrice)/avgPrice*100;
+			return rate;
+		}catch(error){
+			console.error(error);
+		}
+
+		return 0;
+	}
+
+	const initTamagochi = async() => {
+		
+		try{
+			const res = await api.get('/pet');
+			const petdata = res.data.pets[0];
+			const rate = await calRateofreturn(petdata.avgBuyPrice, petdata.ticker);
+
+			setTamagochiInfo({
+				ticker : petdata.ticker,
+				emotion : petdata.emotion,
+				nickname : petdata.nickname,
+				level: petdata.level,
+				rateofreturn: rate, 
+			})
+		} catch(err) {
+			console.error(err);
+		}
+	}
 	
 	const userinfoSet = async() => {
 		try{
@@ -66,6 +101,7 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 	
 	useEffect(()=>{
 		checkAuth();
+		initTamagochi();
 	}, []);
 
 	
@@ -95,11 +131,15 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 		})
 	}
 
-	const tamagochiSetting = (ticker: string, emotion: string) => {
-		console.log(ticker, emotion)
+	const tamagochiSetting = async(ticker: string, emotion: string, nickname: string, level: number, avgBuyPrice: number) => {
+		const rate = await calRateofreturn(avgBuyPrice, ticker);
+
 		setTamagochiInfo({
 			ticker : ticker,
-			emotion : emotion
+			emotion : emotion,
+			nickname : nickname,
+			level: level,
+			rateofreturn: rate,
 		})
 	}
 	

@@ -7,6 +7,7 @@ const PetSchema = new Schema({
     avgBuyPrice: {type: Number, required: true},
     quantity: {type: Number, default: 1},
     emotion: {type: String, default: "neutral"},
+    level : {type: Number, default: 1},
 },{timestamps: true});
 
 const Pet = models.Pet || model('Pet', PetSchema);

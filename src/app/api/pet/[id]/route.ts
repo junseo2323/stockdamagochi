@@ -42,6 +42,7 @@ export async function DELETE(req: NextRequest, {params}: {params: {id: string}})
         }
 }
 
+//닉네임, 평단가, 수량 수정
 export async function PATCH(req: NextRequest, {params}: {params: {id: string}}) {
     await connectToDatabase();
         //로그인 여부 확인

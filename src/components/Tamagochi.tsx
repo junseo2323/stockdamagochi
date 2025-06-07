@@ -7,23 +7,7 @@ import Model from "../components/Model";
 
 import {useAuth} from "@/contexts/AuthContext";
 import {useState} from "react";
-
-const Emotions = (type: string):string => {
-  console.log("type" ,type);
-  if(type === 'happy'){
-    return '😊 happy 상태 '
-  }
-
-  if(type === 'sad'){
-    return '😢 sad 상태 '
-  }
-
-  if(type === 'neutral'){
-    return '😐 감정 없음 상태 '
-  }
-
-  return ''
-}
+import api from "@/lib/api";
 
 export default function Tamagochi(props: {message: string}) {
   const {tamagochiMessage,tamagochiInfo,tamagochiMessageSetting} = useAuth();
@@ -40,55 +24,49 @@ export default function Tamagochi(props: {message: string}) {
   }  
 
   const ColorSetting = (emotion:string):string => {
-    console.log(emotion===tamagochiInfo?.emotion);
     if(emotion === '😊 happy 상태'){
-      return 'bg-red-300';
+      return 'bg-linear-to-b from-[#F66E6E] to-[#ffffff]';
     }
     if(emotion === '😐 감정 없음 상태 '){ //emotion 뒤에 의미없는 공백 저장된 것들 해결하기(어디서?문제가 됐는지도 파악하기)
-      return 'bg-gray-300';
+      return 'bg-linear-to-b from-[#FFA883] to-[#ffffff]';
     }
     if(emotion === '😢 sad 상태 '){
-      return 'bg-blue-300';
+      return 'bg-linear-to-b from-[#6EAEF6] to-[#ffffff]';
     }
-    return 'bg-gray-300';
+    return 'bg-linear-to-b from-[#FFA883] to-[#ffffff]';
+  }
+
+  const rateOfReturn = (avgBuyPrice: number, ticker: string):number => {
+    const res = api.get("/price?ticker="+ticker);
+    console.log(res);
+
+    return 32;
+    
   }
 
 
   return (
-    <div className="flex justify-center items-center h-120">
-      <div className={`w-50 h-50 items-center grid border-1 drop-shadow-3xl rounded-4xl ` + ColorSetting(tamagochiInfo?.emotion)}>
-          <img src={ImageSetting(tamagochiInfo?.ticker)} width={64} className="m-auto" />
-					<p className="font-semibold text-xs text-center">{tamagochiInfo?.emotion}</p>
-					<p className="font-semibold text-xs text-center">{tamagochiMessage?.message}</p>
+    <div className="flex flex-col text-white">
+      <div className="mr-12">
+        <p className="text-center font-bold">{tamagochiInfo?.level}.LV</p>
+        <p className="text-center text-2xl ">{tamagochiInfo?.nickname}</p>
+      </div>
+      <div className="flex justify-center items-center h-120 flex-1">
+        <div className="text-xl text-red-600 ">
+          {}%
         </div>
+        <div className={`text-black mx-5 w-50 h-50 items-center grid drop-shadow-3xl rounded-lg ` + ColorSetting(tamagochiInfo?.emotion)}>
+            <img src={ImageSetting(tamagochiInfo?.ticker)} width={64} className="m-auto" />
+            <p className="font-semibold text-lg text-center">{tamagochiInfo?.emotion}</p>
+            <p className="font-semibold text-sm text-center">{tamagochiMessage?.message}</p>
+        </div>
+        <div className="text-x">
+          TSLL뉴스정보
+        </div>
+      </div>
+      
     </div>
+    
   );
 }
 
-/**
-      <Canvas camera={{ position: [0, 0, 5], fov: 50 }} dpr={[1, 2]}>
-
-        <ambientLight intensity={0.4} />
-
-
-        <hemisphereLight intensity={0.4} groundColor="black" />
-
-
-        <directionalLight
-          intensity={1.3}
-          position={[5, 10, 5]}
-          castShadow
-          shadow-mapSize-width={1024}
-          shadow-mapSize-height={1024}
-          shadow-bias={-0.001}
-        />
-
-
-        <Environment preset="sunset" background={false} />
-
-
-        <Suspense fallback={null}>
-          <Model scale={[4, 4, 4]} />
-        </Suspense>
-      </Canvas>
- */

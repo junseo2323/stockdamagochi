@@ -6,6 +6,7 @@ import { verifyToken } from '@/lib/jwt';
 import User from '@/models/User';
 import Pet from '@/models/Pet';
 
+//펫 생성
 export async function POST(req: NextRequest,) {
     await connectToDatabase();
     
