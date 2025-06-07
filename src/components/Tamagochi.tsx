@@ -36,12 +36,14 @@ export default function Tamagochi(props: {message: string}) {
     return 'bg-linear-to-b from-[#FFA883] to-[#ffffff]';
   }
 
-  const rateOfReturn = (avgBuyPrice: number, ticker: string):number => {
-    const res = api.get("/price?ticker="+ticker);
-    console.log(res);
-
-    return 32;
-    
+  const RateColorSetting = (rate:number):string => {
+    if(rate > 0){
+      return 'text-red-400'
+    }
+    if(rate < 0){
+      return 'text-blue-400'
+    }
+    return 'text-black'
   }
 
 
@@ -52,8 +54,8 @@ export default function Tamagochi(props: {message: string}) {
         <p className="text-center text-2xl ">{tamagochiInfo?.nickname}</p>
       </div>
       <div className="flex justify-center items-center h-120 flex-1">
-        <div className="text-xl text-red-600 ">
-          {}%
+        <div className={"text-xl "+RateColorSetting(tamagochiInfo?.rateofreturn)}>
+          {tamagochiInfo?.rateofreturn}%
         </div>
         <div className={`text-black mx-5 w-50 h-50 items-center grid drop-shadow-3xl rounded-lg ` + ColorSetting(tamagochiInfo?.emotion)}>
             <img src={ImageSetting(tamagochiInfo?.ticker)} width={64} className="m-auto" />

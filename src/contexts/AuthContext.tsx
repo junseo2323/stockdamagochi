@@ -62,8 +62,9 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 		try{
 			const res = await api.get('/price?ticker='+ticker);
 			const nowPrice = res.data.price
-			const rate = (nowPrice-avgPrice)/avgPrice*100;
-			return rate;
+			const rate = ((nowPrice-avgPrice)/avgPrice)*100;
+			console.log("수익률 ", rate , avgPrice , nowPrice);
+			return parseFloat(rate.toFixed(2));
 		}catch(error){
 			console.error(error);
 		}
@@ -83,7 +84,7 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 				emotion : petdata.emotion,
 				nickname : petdata.nickname,
 				level: petdata.level,
-				rateofreturn: rate, 
+				rateofreturn: rate,
 			})
 		} catch(err) {
 			console.error(err);

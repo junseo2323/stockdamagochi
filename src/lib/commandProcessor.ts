@@ -37,7 +37,7 @@ async function fetchCurrentPrice(ticker: string): Promise<number> {
 
 export async function processCommand(
   input: string,
-  tamagochiSetting: (ticker: string, emotion: string, nickname: string, level: number) => void,
+  tamagochiSetting: (ticker: string, emotion: string, nickname: string, level: number, avgBuyPrice: number ) => void,
   tamagochiMessageSetting: (message: string) => void
 ): Promise<string> {
   try {
@@ -121,8 +121,8 @@ export async function processCommand(
 
       await api.patch(`/pet/${pet._id}/emotion`);
 
-      tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level);
-
+      tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level, pet.avgBuyPrice);
+      
       return [
         `🐶 이름: ${pet.nickname}`,
         `💹 티커: ${pet.ticker}`,
