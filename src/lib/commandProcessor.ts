@@ -114,7 +114,7 @@ export async function processCommand(
 
       const [, nickname] = match;
       const pet = await findPetByNickname(nickname);
-      if (!pet) return '😿 해당 펫을 찾을 수 없어요.';
+      if (!pet) return '😿 해당 펫을 찾을 수 없어요!';
 
       const currentPrice = await fetchCurrentPrice(pet.ticker);
       const profit = (currentPrice - pet.avgBuyPrice) * pet.quantity;
