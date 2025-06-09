@@ -41,112 +41,115 @@ export async function processCommand(
   tamagochiMessageSetting: (message: string) => void
 ): Promise<string> {
   try {
-    if (input.includes('메세지테스트')) {
-      tamagochiMessageSetting('안녕하세요?');
-      return 'TEST';
-    }
-    
-    //** 뉴스 관련 명령어 */
-    if (input.startsWith('뉴스')) {
-      const match = input.match(/^뉴스\s+(\S+)$/);
-      if (!match) return '❗ 잘못된 형식이에요. 예: 뉴스 AAPL';
-    
-      const [, ticker] = match;
-    
-      try {
-        // API 호출 (fetch 예시, 너가 쓰는 api.get 대신 바꾸면 됨)
-        const res = await api.get('/news', { params: { ticker } });
-        const data = res.data
+    const [command, ...rest] = input.trim().split(' ');
 
-        if (!data.news || !Array.isArray(data.news) || data.news.length === 0) {
-          return `❗ ${ticker} 관련 뉴스가 없어요.`;
-        }
-    
-        // 뉴스 배열을 포맷팅
-        const formatted = data.news
-          .map((item: any, idx: number) => {
-            return `${idx + 1}. 제목: ${item.title || '제목 없음'}
-       감성: ${item.sentiment || '알 수 없음'}`;
-          })
-          .join('\n\n');
-    
-        return formatted;
-    
-      } catch (error) {
-        console.error('뉴스 API 호출 에러:', error);
-        return '❗ 뉴스 정보를 불러오는 중 오류가 발생했어요.';
+switch (true) {
+  // 1. 테스트 메시지
+  case input.includes('메세지테스트'):
+    tamagochiMessageSetting('안녕하세요?');
+    return 'TEST';
+
+  // 2. 뉴스 명령어
+  case command === '뉴스': {
+    const match = input.match(/^뉴스\s+(\S+)$/);
+    if (!match) return '❗ 잘못된 형식이에요. 예: 뉴스 AAPL';
+
+    const [, ticker] = match;
+    try {
+      const res = await api.get('/news', { params: { ticker } });
+      const data = res.data;
+
+      if (!data.news || !Array.isArray(data.news) || data.news.length === 0) {
+        return `❗ ${ticker} 관련 뉴스가 없어요.`;
       }
+
+      const formatted = data.news
+        .map((item: any, idx: number) => {
+          return `${idx + 1}. 제목: ${item.title || '제목 없음'}
+감성: ${item.sentiment || '알 수 없음'}`;
+        })
+        .join('\n\n');
+
+      return formatted;
+    } catch (error) {
+      console.error('뉴스 API 호출 에러:', error);
+      return '❗ 뉴스 정보를 불러오는 중 오류가 발생했어요.';
     }
-    
+  }
 
-    //**펫 관련 명령어 */
+  // 3. 펫 추가
+  case input.startsWith('펫 추가'): {
+    const match = input.match(/^펫 추가\s+(\S+)\s+(\S+)\s+(\d+)\s+([\d.]+)$/);
+    if (!match) return '❗ 잘못된 형식이에요. 예: 펫 추가 AAPL 애플이 3 198.5';
 
-    if (input.startsWith('펫 추가')) {
-      const match = input.match(/^펫 추가\s+(\S+)\s+(\S+)\s+(\d+)\s+([\d.]+)$/);
-      if (!match) return '❗ 잘못된 형식이에요. 예: 펫 추가 AAPL 애플이 3 198.5';
+    const [, ticker, nickname, quantityStr, avgBuyPriceStr] = match;
+    await api.post('/pet', {
+      ticker,
+      nickname,
+      avgBuyPrice: Number(avgBuyPriceStr),
+      quantity: Number(quantityStr),
+    });
 
-      const [, ticker, nickname, quantityStr, avgBuyPriceStr] = match;
-      await api.post('/pet', {
-        ticker,
-        nickname,
-        avgBuyPrice: Number(avgBuyPriceStr),
-        quantity: Number(quantityStr),
-      });
+    const pet = await findPetByNickname(nickname);
+    if (!pet) return '❌ 펫 등록 후 찾을 수 없습니다.';
 
-      const pet = await findPetByNickname(nickname);
-      if (!pet) return '❌ 펫 등록 후 찾을 수 없습니다.';
+    await api.patch(`/pet/${pet._id}/emotion`);
+    return `✅ ${nickname} 펫 등록 완료!`;
+  }
 
-      await api.patch(`/pet/${pet._id}/emotion`);
+  // 4. 펫 목록
+  case input.startsWith('펫 목록'): {
+    const pets = await fetchPets();
+    if (pets.length === 0) return '😿 등록된 펫이 없어요!';
+    const list = pets.map(p => `${p.nickname} (${p.ticker})`).join(', ');
+    return `✅ 펫 목록: ${list}`;
+  }
 
-      return `✅ ${nickname} 펫 등록 완료!`;
-    }
+  // 5. 펫 정보
+  case input.startsWith('펫 정보'): {
+    const match = input.match(/^펫 정보\s+(\S+)$/);
+    if (!match) return '❗ 잘못된 형식이에요. 예: 펫 정보 애플이';
 
-    if (input.startsWith('펫 목록')) {
-      const pets = await fetchPets();
-      if (pets.length === 0) return '😿 등록된 펫이 없어요!';
-      const list = pets.map(p => `${p.nickname} (${p.ticker})`).join(', ');
-      return `✅ 펫 목록: ${list}`;
-    }
+    const [, nickname] = match;
+    const pet = await findPetByNickname(nickname);
+    if (!pet) return '😿 해당 펫을 찾을 수 없어요!';
 
-    if (input.startsWith('펫 정보')) {
-      const match = input.match(/^펫 정보\s+(\S+)$/);
-      if (!match) return '❗ 잘못된 형식이에요. 예: 펫 정보 애플이';
+    const currentPrice = await fetchCurrentPrice(pet.ticker);
+    const profit = (currentPrice - pet.avgBuyPrice) * pet.quantity;
 
-      const [, nickname] = match;
-      const pet = await findPetByNickname(nickname);
-      if (!pet) return '😿 해당 펫을 찾을 수 없어요!';
+    await api.patch(`/pet/${pet._id}/emotion`);
 
-      const currentPrice = await fetchCurrentPrice(pet.ticker);
-      const profit = (currentPrice - pet.avgBuyPrice) * pet.quantity;
+    tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level, pet.avgBuyPrice);
 
-      await api.patch(`/pet/${pet._id}/emotion`);
+    return [
+      `🐶 이름: ${pet.nickname}`,
+      `💹 티커: ${pet.ticker}`,
+      `📦 수량: ${pet.quantity}주`,
+      `💰 평단: ${pet.avgBuyPrice}`,
+      `💰 현재가: ${currentPrice}`,
+      `💰 손익: ${profit}`,
+      `😊 기분: ${pet.emotion}`,
+    ].join('\n');
+  }
 
-      tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level, pet.avgBuyPrice);
-      
-      return [
-        `🐶 이름: ${pet.nickname}`,
-        `💹 티커: ${pet.ticker}`,
-        `📦 수량: ${pet.quantity}주`,
-        `💰 평단: ${pet.avgBuyPrice}`,
-        `💰 현재가: ${currentPrice}`,
-        `💰 손익: ${profit}`,
-        `😊 기분: ${pet.emotion}`,
-      ].join('\n');
-    }
+  // 6. 펫 삭제
+  case input.startsWith('펫 삭제'): {
+    const match = input.match(/^펫 삭제\s+(\S+)$/);
+    if (!match) return '❗ 잘못된 형식이에요. 예: 펫 삭제 AAPL';
 
-    if (input.startsWith('펫 삭제')) {
-      const match = input.match(/^펫 삭제\s+(\S+)$/);
-      if (!match) return '❗ 잘못된 형식이에요. 예: 펫 삭제 AAPL';
+    const [, ticker] = match;
+    const pet = await findPetByTicker(ticker);
+    if (!pet) return '😿 해당 펫을 찾을 수 없어요.';
 
-      const [, ticker] = match;
-      const pet = await findPetByTicker(ticker);
-      if (!pet) return '😿 해당 펫을 찾을 수 없어요.';
+    await api.delete(`/pet/${pet._id}`);
+    return `✅ ${pet.nickname} (${pet.ticker}) 펫 삭제 완료!`;
+  }
 
-      await api.delete(`/pet/${pet._id}`);
-      return `✅ ${pet.nickname} (${pet.ticker}) 펫 삭제 완료!`;
-    }
-
+  // 기본 처리
+  default:
     return '❓ 알 수 없는 명령입니다.';
+}
+
   } catch (error) {
     const message =
       error instanceof Error ? error.message : '알 수 없는 오류가 발생했어요.';
