@@ -1,14 +1,5 @@
-"use client"
-
-import Command from '@/components/command';
-// app/page.jsx
-import Tamagochi from '@/components/Tamagochi'
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <div>
-        <Tamagochi />
-        <Command />
-	 </div>
-  );
+  redirect('/home');  
 }

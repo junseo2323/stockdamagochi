@@ -48,8 +48,41 @@ export default function Tamagochi(props: {message: string}) {
 
 
   return (
-    <div className="flex flex-col text-white">
-      <div className="mr-12">
+    <div className="grid w-screen place-items-center">
+      <div className="grid grid-cols-[100px_60%_100px] grid-rows-[0.1fr_1fr_0.1fr] gap-4 relative place-items-center">
+        {/* 위쪽 */}
+        <div className="col-start-2 row-start-1 mx-12">
+          <p className="text-center font-bold">{tamagochiInfo?.level}.LV</p>
+          <p className="text-center text-2xl ">{tamagochiInfo?.nickname}</p>
+        </div>
+
+        {/* 왼쪽 */}
+        <div className={"col-start-1 row-start-2 text-xl "+RateColorSetting(tamagochiInfo?.rateofreturn)}>
+          {tamagochiInfo?.rateofreturn}%
+        </div>
+
+
+        {/* 중심 (기준 div) */}
+        <div className={`col-start-2 row-start-2 text-black w-50 h-50 items-center grid drop-shadow-3xl rounded-lg ` + ColorSetting(tamagochiInfo?.emotion)}>
+            <img src={ImageSetting(tamagochiInfo?.ticker)} width={64} className="m-auto" />
+            <p className="font-semibold text-lg text-center">{tamagochiInfo?.emotion}</p>
+            <p className="font-semibold text-sm text-center">{tamagochiMessage?.message}</p>
+        </div>
+
+        {/* 오른쪽 */}
+        <div className="col-start-3 row-start-2 text-x">
+          뉴스정보
+        </div>
+
+  
+      </div>
+    </div>
+  );
+}
+
+/**
+ <div className="flex flex-col text-white">
+      <div className="mx-12">
         <p className="text-center font-bold">{tamagochiInfo?.level}.LV</p>
         <p className="text-center text-2xl ">{tamagochiInfo?.nickname}</p>
       </div>
@@ -63,12 +96,8 @@ export default function Tamagochi(props: {message: string}) {
             <p className="font-semibold text-sm text-center">{tamagochiMessage?.message}</p>
         </div>
         <div className="text-x">
-          TSLL뉴스정보
+          뉴스정보
         </div>
       </div>
-      
     </div>
-    
-  );
-}
-
+ */
