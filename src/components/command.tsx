@@ -35,8 +35,8 @@ export default function Command(props: {}) {
     
     return(
         <div className="w-full absolute inset-0 top-[65vh] pt-2">
-            <div className='m-4 h-50 border-1 rounded-4xl border-solid border-black'>
-              <p className='text-black p-4'>{responses}</p>
+            <div className='my-4 mx-26  h-50 border-1 rounded-4xl border-solid border-white'>
+              <p className='text-white p-4'>{responses}</p>
             </div>
             <div className='flex justify-center items-center h-10'>
             <form onSubmit={onSubmit} className="">
@@ -44,7 +44,7 @@ export default function Command(props: {}) {
                   ref={inputRef}
                   onChange={handleChange}
                   placeholder="명령어를 입력하세요"
-                  className="w-150 rounded-2xl h-12 pl-3 text-black border-1 focus:ring-0 focus:outline-none"
+                  className="w-150 rounded-2xl h-12 pl-3 text-white border-1 focus:ring-0 focus:outline-none"
                   type='text'
                   value={answer}
               />

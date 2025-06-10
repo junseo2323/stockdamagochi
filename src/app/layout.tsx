@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={notoSansKr.variable}>
       <body
-        className={`font-sans`+' overflow-hidden bg-[#DEC9C0] '}
+        className={`font-sans`+' overflow-hidden bg-[#000000] '}
       >
         <AuthProvider>
           <Nav />
