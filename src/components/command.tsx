@@ -35,7 +35,21 @@ export default function Command(props: {}) {
     
     return(
         <div className="w-full absolute inset-0 top-[65vh] pt-2">
-            <div className='my-4 mx-26  h-50 border-1 rounded-4xl border-solid border-white'>
+            
+        </div>
+    )
+}
+
+/**
+ * [명령어 모음]
+ * 1. 펫 추가
+ * 2. 펫 목록
+ * 3. 펫 정보
+ * 4. 펫 삭제
+ */
+
+/**
+ <div className='my-4 mx-26  h-50 border-1 rounded-4xl border-solid border-white'>
               <p className='text-white p-4'>{responses}</p>
             </div>
             <div className='flex justify-center items-center h-10'>
@@ -54,14 +68,4 @@ export default function Command(props: {}) {
             </form>
             </div>
             
-        </div>
-    )
-}
-
-/**
- * [명령어 모음]
- * 1. 펫 추가
- * 2. 펫 목록
- * 3. 펫 정보
- * 4. 펫 삭제
  */

@@ -18,8 +18,9 @@
         "name": "next"
       }
     ],
+    "baseUrl": "./",  // baseUrl 추가
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./src/*"],  // 이제 @ 경로가 src 폴더를 기준으로 매핑됩니다.
       "next/*": ["node_modules/next/*"]
     }
   },

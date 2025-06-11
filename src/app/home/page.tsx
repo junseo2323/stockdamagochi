@@ -6,6 +6,7 @@ import {useAuth} from "@/contexts/AuthContext";
 import {useState,useEffect} from "react";
 import Tamagochi from "@/components/Tamagochi";
 import Command from "@/components/command";
+import Nav from "@/components/Nav";
 
 
 export default function Home() {
@@ -35,7 +36,7 @@ export default function Home() {
 		  <>
 				<div>
 					<Tamagochi />
-					<Command />
+					<Nav />
 				</div>		 
 			 </>
 		  }

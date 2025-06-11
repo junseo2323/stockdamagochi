@@ -27,12 +27,18 @@ export default function RootLayout({
   return (
     <html lang="en" className={notoSansKr.variable}>
       <body
-        className={`font-sans`+' overflow-hidden bg-[#000000] '}
+        className={`font-[notosans]`+' overflow-hidden bg-gradient-to-r from-[#F4F5F6] to-[#9FB4FF] '}
       >
-        <AuthProvider>
-          <Nav />
-          {children}
-        </AuthProvider>
+       
+    {/* 배경 블러 레이어 */}
+    <div className="m-auto absolute w-130 inset-0 z-0 bg-gradient-to-b from-[#B9FBFF] to-[#D1C9F1] blur-md rounded-2xl" />
+
+    {/* 컨텐츠 레이어 */}
+    <div className="relative z-10">
+      <AuthProvider>
+        {children}
+      </AuthProvider>
+    </div>
       </body>
     </html>
   );
