@@ -34,8 +34,9 @@ export default function Home() {
    	<div>
 		  {userinfo&&
 		  <>
-				<div>
+				<div className="grid grid-rows-[1fr_1fr_0.3fr] h-screen">
 					<Tamagochi />
+					<Command />
 					<Nav />
 				</div>		 
 			 </>

@@ -7,7 +7,7 @@ export default function Nav() {
     const { logout } = useAuth();
 
     return (
-        <div className="flex justify-center items-center w-full h-180">
+        <div className="flex justify-center items-center w-full">
             <div className="w-80 h-20 bg-white/30 rounded-4xl border-1 border-white">
                 <div className="grid place-items-center grid-cols-4 mt-6">
                     <Link href='./home'><img src='/nav/1.png' alt="nav-1" /></Link>
