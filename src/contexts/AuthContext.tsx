@@ -25,7 +25,9 @@ interface TamagochiInfoType { //다마고치 셋팅정보
 	emotion : string;
 	nickname : string;
 	level : number;
+	avgBuyPrice : number;
 	rateofreturn: number;
+	nowPrice: number;
 }
 
 interface AuthContextType {
@@ -72,19 +74,23 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 			index: index
 		})
 	}
+	type RateoType = {
+		rate: number;
+		price: number;
+	};
 
-	const calRateofreturn = async(avgPrice: number, ticker: string):Promise<number> => {
+	const calRateofreturn = async(avgPrice: number, ticker: string):Promise<RateoType> => {
 		try{
 			const res = await api.get('/price?ticker='+ticker);
 			const nowPrice = res.data.price
 			const rate = ((nowPrice-avgPrice)/avgPrice)*100;
 			console.log("수익률 ", rate , avgPrice , nowPrice);
-			return parseFloat(rate.toFixed(2));
+			return {rate: parseFloat(rate.toFixed(2)), price: nowPrice};
 		}catch(error){
 			console.error(error);
 		}
 
-		return 0;
+		return {rate: 0, price: 0};
 	}
 
 	const initTamagochi = async() => {
@@ -99,7 +105,9 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 				emotion : petdata.emotion,
 				nickname : petdata.nickname,
 				level: petdata.level,
-				rateofreturn: rate,
+				avgBuyPrice: petdata.avgBuyPrice,
+				rateofreturn: rate.rate,
+				nowPrice: rate.price,
 			})
 		} catch(err) {
 			console.error(err);
@@ -118,7 +126,7 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 	useEffect(()=>{
 		setCommand({
 			page : 1,
-			index : '다마고치_선택화면'
+			index : '홈_리스트'
 		});
 		checkAuth();
 		initTamagochi();
@@ -159,7 +167,9 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 			emotion : emotion,
 			nickname : nickname,
 			level: level,
-			rateofreturn: rate,
+			avgBuyPrice: avgBuyPrice,
+			rateofreturn: rate.rate,
+			nowPrice: rate.price,
 		})
 	}
 	

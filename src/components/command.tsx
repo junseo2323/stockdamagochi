@@ -3,12 +3,68 @@
 import { processCommand } from '@/lib/commandProcessor';
 import { useEffect, useState, useRef } from 'react';
 import {useAuth} from "@/contexts/AuthContext";
+import { AnimatePresence, motion } from 'framer-motion';
+import api from '@/lib/api';
+
+type Pet = {
+  _id: string;
+  ticker: string;
+  nickname: string;
+  quantity: number;
+  avgBuyPrice: number;
+  emotion: string;
+  level: number;
+};
+
+async function fetchPets(): Promise<Pet[]> {
+  const res = await api.get('/pet');
+  return res.data.pets;
+}
+
+//닉네임을 활용해서 펫 정보 검색 
+async function findPetByNickname(nickname: string): Promise<Pet | undefined> { 
+  const pets = await fetchPets();
+  return pets.find(p => p.nickname === nickname);
+}
+
+//TICKER을 활용해서 해당 주가 검색
+async function fetchCurrentPrice(ticker: string): Promise<number> {
+  const res = await api.get(`/price`, { params: { ticker } });
+  return res.data.price;
+}
 
 export default function Command(props: {}) {
-    const {command, commandSet} = useAuth()
+
+
+    const [pets, setPets] = useState<Pet[]>([]);
+    const {command, commandSet, tamagochiSetting} = useAuth()
 
     const page = command?.page;
     const index = command?.index;
+
+    const [animationKey, setAnimationKey] = useState(`${page}-${index}`);
+
+    useEffect(() => {
+      if (page === 1 && index === '홈_리스트') {
+        const fetchData = async () => {
+          try {
+            const res = await fetchPets();
+            setPets(res);
+          } catch (error) {
+            console.error('Failed to fetch pets:', error);
+          }
+        };
+        fetchData();
+      }
+    }, [page, index]);
+  
+  
+
+      // 전환 감지
+      useEffect(() => {
+          setAnimationKey(`${page}-${index}`);
+      }, [page, index]);
+  
 
     const toggleCommand = () => {
       if(page === 2) {
@@ -73,20 +129,40 @@ export default function Command(props: {}) {
       }
       
       if(page === 1) { //다마고치 목록 보기
+        
         if(index === '홈_리스트'){
+          const handleOnClick = async(nickname: string) => {
+            const pet = await findPetByNickname(nickname);
+            if (!pet) return '😿 해당 펫을 찾을 수 없어요!';
+
+            const currentPrice = await fetchCurrentPrice(pet.ticker);
+            
+        
+            await api.patch(`/pet/${pet._id}/emotion`);
+        
+            tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level, pet.avgBuyPrice);
+          }
           return (
             <div>
               {/**다마고치 배경 */} 
-              <div className="absolute z-0 w-80 h-70 m-auto backdrop-blur-[4px] rounded-4xl bg-linear-45 from-[#FFFFFF/0] to-[#FFFFFF] border-1 border-white"></div>
+              <div className="absolute z-0 w-80 h-90 m-auto backdrop-blur-[4px] rounded-4xl bg-linear-45 from-[#FFFFFF/0] to-[#FFFFFF] border-1 border-white"></div>
   
               {/**다마고치 홈 화면 리스트*/}
-                <div className='relative z-10 w-80 h-65 p-5 grid grid-cols-2'>
-                  <div className='backdrop-blur-[4px] rounded-4xl bg-linear-45 from-[#FFFFFF/0] to-[#FFFFFF] border-1 border-white'>test!</div>
-                  <div>test!</div>
-                  <div>test!</div>
-                  <div>test!</div>
-                  <div>test!</div>
-                  <div>test!</div>
+                <div className='scrollbar-hide overflow-y-auto relative z-10 w-80 h-90 p-5 grid grid-cols-2 gap-4'>
+                {pets.length === 0 ? (
+                  <div></div>
+                ) : (
+                  pets.map(p => (
+                    <div key={p._id} onClick={()=>{handleOnClick(p.nickname)}} className='items-center grid grid-rows-3 p-3 w-30 h-30 backdrop-blur-[4px] rounded-4xl bg-linear-45 from-[#FFFFFF/0] to-[#FFFFFF] border-1 border-white'>
+                      <p className='text-center'>{p.level}Lv</p>
+                      <div className="m-auto z-5 w-10 flex justify-center items-center blur-[1px]">
+                        <img src='/AAPL.png' alt="pet" />
+                      </div>
+                      <p className='text-center text-sm'>{p.ticker} | {p.nickname}</p>
+                    </div>
+                  ))
+                )}
+
                 </div>
             </div>
           )
@@ -103,11 +179,26 @@ export default function Command(props: {}) {
     }
   
     return(
-        <div className="flex justify-center items-center w-full p-10 pt-40">
-          
-          {toggleCommand()}
-
+        <div   className="
+        fixed
+        bottom-1/6
+        left-1/2
+        transform -translate-x-1/2
+        flex justify-center items-center w-full
+      "
+    >
+          <AnimatePresence mode="wait">
+              <motion.div
+                  key={animationKey}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+              >
+                  {toggleCommand()}
+              </motion.div>
+          </AnimatePresence>
         </div>
+
     )
 }
 

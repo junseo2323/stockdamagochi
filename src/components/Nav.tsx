@@ -29,7 +29,14 @@ export default function Nav() {
     }
     
     return (
-        <div className="flex justify-center items-center w-full">
+        <div   className="
+        fixed
+        bottom-4
+        left-1/2
+        transform -translate-x-1/2
+        flex justify-center items-center w-full
+      "
+    >
             <div className="w-80 h-20 bg-white/30 rounded-4xl border-1 border-white">
                 <div className="grid place-items-center grid-cols-4 mt-6">
                     <div onClick={() => controlPage(1)} ><img src={`/nav/${selected(1)}1.png`} alt="nav-1" /></div>
