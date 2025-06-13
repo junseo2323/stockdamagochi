@@ -5,6 +5,11 @@ import api from "@/lib/api";
 import {useRouter} from "next/navigation";
 import { useFormState } from "react-dom";
 
+interface CommandControl { //Nav => Command 컨트롤용 변수
+	page : number; 
+	index : string;
+}
+
 interface User {
 	id : string;
 	email : string;
@@ -24,6 +29,7 @@ interface TamagochiInfoType { //다마고치 셋팅정보
 }
 
 interface AuthContextType {
+	command : CommandControl | null;
 	user : User | null;
 	tamagochiMessage : TamagochiType | null;
 	tamagochiInfo : TamagochiInfoType | null;
@@ -34,12 +40,14 @@ interface AuthContextType {
 	logout : () => Promise<void>;
 	tamagochiMessageSetting : (message : string) => void;
 	tamagochiSetting : (ticker : string, emotion : string, nickname: string, level: number, avgBuyPrice: number) => void;
+	commandSet : (page: number, index : string) => void;
 }
 
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider= ({children} : {children: React.ReactNode}) => {
+	const [command, setCommand] = useState<CommandControl | null>(null); 
 	const [user, setUser] = useState<User | null>(null);
 	const [userinfo, setUserinfo] = useState<User | null>(null);
 	const [tamagochiMessage, setTamagochiMessager] = useState<TamagochiType | null>(null);
@@ -57,6 +65,13 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 			setLoading(false);
 		}``
 	};
+
+	const commandSet = (page:number, index: string) => {
+		setCommand({
+			page: page,
+			index: index
+		})
+	}
 
 	const calRateofreturn = async(avgPrice: number, ticker: string):Promise<number> => {
 		try{
@@ -101,6 +116,10 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 	};
 	
 	useEffect(()=>{
+		setCommand({
+			page : 1,
+			index : '다마고치_선택화면'
+		});
 		checkAuth();
 		initTamagochi();
 	}, []);
@@ -145,7 +164,7 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 	}
 	
 	return(
-		<AuthContext.Provider value={{tamagochiMessage, tamagochiInfo, user, userinfo, loading, login, register, logout, tamagochiMessageSetting, tamagochiSetting}}>
+		<AuthContext.Provider value={{command,tamagochiMessage, tamagochiInfo, user, userinfo, loading, login, register, logout, tamagochiMessageSetting, tamagochiSetting, commandSet}}>
 			{children}
 		</AuthContext.Provider>
 	);
