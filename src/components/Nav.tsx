@@ -21,7 +21,7 @@ export default function Nav() {
             commandSet(2, '먹이주기');
         }
         if(select===3) {
-            commandSet(3, '테스트');
+            commandSet(3, '추가하기');
         }
         if(select===4) {
             commandSet(4, '테스트');

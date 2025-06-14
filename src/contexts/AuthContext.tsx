@@ -128,7 +128,7 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 			page : 1,
 			index : '홈_리스트'
 		});
-		checkAuth();
+		checkAuth().then(userinfoSet);
 		initTamagochi();
 	}, []);
 

@@ -10,16 +10,17 @@ import Nav from "@/components/Nav";
 
 
 export default function Home() {
-	const {user,userinfo,logout} = useAuth();
+	const {user,userinfo,logout,loading } = useAuth();
 	const router = useRouter();
 
-	useEffect(()=>{
-		console.log(userinfo);
-		if(!user) {
-			router.push("/login");
+	useEffect(() => {
+		if (!loading) {
+			if (!user) {
+				router.push("/login");
+			}
 		}
-	},[]);
-	
+	}, [loading, user]);
+
 	const LogoutHandleEvent = async(e: React.FormEvent) => {
 		e.preventDefault();
 		await logout();

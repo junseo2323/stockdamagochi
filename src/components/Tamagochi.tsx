@@ -80,32 +80,3 @@ export default function Tamagochi(props: {message: string}) {
     </div>
   );
 }
-
-/*
- <div className="grid w-screen place-items-center text-white">
-      <div className="grid grid-cols-[100px_60%_100px] grid-rows-[0.1fr_1fr_0.1fr] gap-4 relative place-items-center">
-        <div className="col-start-2 row-start-1 mx-12 ">
-          <p className="text-center font-bold">{tamagochiInfo?.level}.LV</p>
-          <p className="text-center text-2xl ">{tamagochiInfo?.nickname}</p>
-        </div>
-
-        <div className={"col-start-1 row-start-2 text-xl "+RateColorSetting(tamagochiInfo?.rateofreturn)}>
-          {tamagochiInfo?.rateofreturn}%
-        </div>
-
-
-        <div className={`col-start-2 row-start-2 text-black w-50 h-50 items-center grid drop-shadow-3xl rounded-lg ` + ColorSetting(tamagochiInfo?.emotion)}>
-            <img src={ImageSetting(tamagochiInfo?.ticker)} width={64} className="m-auto" />
-            <p className="font-semibold text-lg text-center">{tamagochiInfo?.emotion}</p>
-            <p className="font-semibold text-sm text-center">{tamagochiMessage?.message}</p>
-        </div>
-
-        <div className="col-start-3 row-start-2 text-x text-white">
-          뉴스정보
-        </div>
-
-  
-      </div>
-    </div>
-
-*/
