@@ -19,7 +19,7 @@ export default function Register() {
 
   return (
    	<>
-	    <form onSubmit={handleSubmit} className="absolute flex flex-col bg-[#ffffff] w-1/3 h-1/2 top-[20%] left-[30%] p-10 shadow-2xl rounded-3xl">
+	    <form onSubmit={handleSubmit} className="absolute flex flex-col bg-[#ffffff] w-80 h-120 top-[20%] left-[30%] p-10 shadow-2xl rounded-3xl">
 	        <p className="w-full text-xl font-bold text-cetner mb-3">회원가입</p>
 			<div className="flex-auto">
 				<label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">Name</label>

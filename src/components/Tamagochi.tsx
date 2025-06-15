@@ -43,7 +43,7 @@ export default function Tamagochi(props: {message: string}) {
   return (
     <div   className="
     fixed
-    top-4
+    top-10
     left-1/2
     transform -translate-x-1/2
     flex justify-center items-center w-full

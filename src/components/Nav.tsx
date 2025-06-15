@@ -31,7 +31,7 @@ export default function Nav() {
     return (
         <div   className="
         fixed
-        bottom-4
+        bottom-10
         left-1/2
         transform -translate-x-1/2
         flex justify-center items-center w-full

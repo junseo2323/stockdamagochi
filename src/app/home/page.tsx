@@ -7,6 +7,7 @@ import {useState,useEffect} from "react";
 import Tamagochi from "@/components/Tamagochi";
 import Command from "@/components/command";
 import Nav from "@/components/Nav";
+import Gloablnav from "@/components/Gloablnav";
 
 
 export default function Home() {
@@ -36,6 +37,7 @@ export default function Home() {
 		  {userinfo&&
 		  <>
 				<div className="grid grid-rows-[1fr_1fr_0.3fr] h-screen">
+					<Gloablnav />
 					<Tamagochi />
 					<Command />
 					<Nav />

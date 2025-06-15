@@ -18,7 +18,7 @@ export default function Login() {
 	
   return (
    	<>
-	    <form onSubmit={handleSubmit} className="absolute flex flex-col bg-[#ffffff] w-1/3 h-1/2 top-[20%] left-[30%] p-10 shadow-2xl rounded-3xl">
+	    <form onSubmit={handleSubmit} className="absolute flex flex-col bg-[#ffffff] w-80 h-120 top-[20%] left-[30%] p-10 shadow-2xl rounded-3xl">
 	        <p className="w-full text-xl font-bold text-cetner">로그인</p>
 			<div className="flex-2 pt-10">
 				<label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">email</label>
