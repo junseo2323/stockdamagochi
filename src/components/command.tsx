@@ -14,7 +14,7 @@ import Add from './add/Add';
 import AddSuccess from './add/AddSuccess';
 import FeedSuccess from './feed/FeedSuccess';
 
-export default function Command(props: {}) {
+export default function Command({ onFeedAction }: { onFeedAction: () => void }) {
     const {command} = useAuth()
 
     const page = command?.page;
@@ -59,7 +59,7 @@ export default function Command(props: {}) {
           '홈_수정': () => <HomeModify modifypet={modifypet} />,
         },
         2: {
-          '먹이주기': () => <Feed />,
+          '먹이주기': () => <Feed onFeedAction={onFeedAction}/>,
           '먹이주기_성공': () => <FeedSuccess />,
         },
         3: {

@@ -31,7 +31,11 @@ export default function RootLayout({
       >
        
     {/* 배경 블러 레이어 */}
-    <div className="m-auto absolute h-full w-130 inset-0 z-0 bg-gradient-to-b from-[#B9FBFF] to-[#D1C9F1] blur-md rounded-2xl" />
+    <div className="m-auto absolute h-full w-130 inset-0 z-0 bg-gradient-to-b from-[#B9FBFF] to-[#D1C9F1] blur-[2px] rounded-2xl">
+      <img src='/bg_img1.png' className="absolute h-95 top-0 left-0"/>
+      <img src='/bg_img2.png' className="absolute h-95 bottom-0 right-0"/>
+    </div>
+
 
     {/* 컨텐츠 레이어 */}
     <div className="relative z-10">

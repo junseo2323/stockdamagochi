@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Gloablnav(){
     const {logout} = useAuth();
@@ -33,7 +33,7 @@ export default function Gloablnav(){
             {
                 menuVisible &&
                 <div
-                        className={`bg-gradient-to-b from-[#B9FBFF] to-[#D1C9F1] rounded-2xl h-screen w-131 absolute top-0 left-39 z-50 shadow-lg 
+                        className={`bg-gradient-to-b from-[#B9FBFF] to-[#D1C9F1] rounded-2xl h-screen w-131 absolute top-0 z-50 shadow-lg 
                         transition-transform duration-500 
                         ${menuOpen ? "translate-y-0" : "translate-y-full"}`}
                     >

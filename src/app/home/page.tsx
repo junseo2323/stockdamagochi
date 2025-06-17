@@ -11,6 +11,12 @@ import Gloablnav from "@/components/Gloablnav";
 
 
 export default function Home() {
+	//Feed.tsx -> Tamagochi.tsx간 통신
+	const [refreshKey, setRefreshKey] = useState(0);
+	const triggerTamagochiRerender = () => {
+		setRefreshKey(prev => prev + 1);
+	};
+	
 	const {user,userinfo,logout,loading } = useAuth();
 	const router = useRouter();
 
@@ -38,8 +44,8 @@ export default function Home() {
 		  <>
 				<div className="grid grid-rows-[1fr_1fr_0.3fr] h-screen">
 					<Gloablnav />
-					<Tamagochi />
-					<Command />
+					<Tamagochi key={refreshKey}/>
+					<Command onFeedAction={triggerTamagochiRerender}  />
 					<Nav />
 				</div>		 
 			 </>

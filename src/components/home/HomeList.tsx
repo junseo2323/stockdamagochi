@@ -12,7 +12,7 @@ export default function HomeList({pets , setModifypet }: { pets: Pet[]; setModif
 
         const currentPrice = await fetchCurrentPrice(pet.ticker);
         await api.patch(`/pet/${pet._id}/emotion`);
-        tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level, pet.avgBuyPrice);
+        tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level, pet.avgBuyPrice, pet.quantity);
       }
     return (
         <div>

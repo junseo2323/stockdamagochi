@@ -2,7 +2,7 @@
 
 import {useAuth} from "@/contexts/AuthContext";
 
-export default function Tamagochi(props: {message: string}) {
+export default function Tamagochi() {
   const {tamagochiMessage,tamagochiInfo,tamagochiMessageSetting} = useAuth();
   const ImageSetting = (ticker:string):string => {
     if(ticker === 'TSLA'){
@@ -62,11 +62,11 @@ export default function Tamagochi(props: {message: string}) {
         <div className="grid grid-cols-2 w-69">
           <div className="text-left">
             <p className="font-normal text-xl">{tamagochiInfo?.nowPrice}$</p>
-            <p className="font-normal text-sm text-blue-400">어제보다 -24%</p>
+            <p className={"font-normal text-sm "+RateColorSetting(tamagochiInfo?.rateofreturn)}>{tamagochiInfo?.rateofreturn}%</p>
           </div>
           <div className="text-right">
-            <p className="font-normal text-xl">{tamagochiInfo?.avgBuyPrice}$</p>
-            <p className={"font-normal text-sm "+RateColorSetting(tamagochiInfo?.rateofreturn)}>{tamagochiInfo?.rateofreturn}%</p>
+            <p className="font-normal text-xl">{(tamagochiInfo?.avgBuyPrice)?.toFixed(2)}$</p>
+            <p className={"font-normal text-sm "}>{tamagochiInfo?.quantity}주</p>
           </div>
         </div>
         <div className="m-auto mt-8">
