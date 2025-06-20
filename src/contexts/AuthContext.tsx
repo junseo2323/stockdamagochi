@@ -25,6 +25,7 @@ interface TamagochiInfoType { //다마고치 셋팅정보
 	emotion : string;
 	nickname : string;
 	level : number;
+	exp : number;
 	quantity: number;
 	avgBuyPrice : number;
 	rateofreturn: number;
@@ -42,7 +43,7 @@ interface AuthContextType {
 	register : (email: string, password: string, name: string) => Promise<void>;
 	logout : () => Promise<void>;
 	tamagochiMessageSetting : (message : string) => void;
-	tamagochiSetting : (ticker : string, emotion : string, nickname: string, level: number, avgBuyPrice: number, quantity: number) => void;
+	tamagochiSetting : (ticker : string, emotion : string, nickname: string, level: number, exp: number, avgBuyPrice: number, quantity: number) => void;
 	commandSet : (page: number, index : string) => void;
 }
 
@@ -106,6 +107,7 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 				emotion : petdata.emotion,
 				nickname : petdata.nickname,
 				level: petdata.level,
+				exp: petdata.exp,
 				quantity : petdata.quantity,
 				avgBuyPrice: petdata.avgBuyPrice,
 				rateofreturn: rate.rate,
@@ -161,7 +163,7 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 		})
 	}
 
-	const tamagochiSetting = async(ticker: string, emotion: string, nickname: string, level: number, avgBuyPrice: number, quantity: number) => {
+	const tamagochiSetting = async(ticker: string, emotion: string, nickname: string, level: number, exp: number, avgBuyPrice: number, quantity: number) => {
 		const rate = await calRateofreturn(avgBuyPrice, ticker);
 
 		setTamagochiInfo({
@@ -170,6 +172,7 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 			nickname : nickname,
 			quantity : quantity,
 			level: level,
+			exp: exp,
 			avgBuyPrice: avgBuyPrice,
 			rateofreturn: rate.rate,
 			nowPrice: rate.price,

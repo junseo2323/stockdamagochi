@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import api, { fetchCurrentPrice, findPetByNickname } from "@/lib/api";
+import api, { calculateLevel, fetchCurrentPrice, findPetByNickname } from "@/lib/api";
 import React, { useState } from "react"
 
 export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
@@ -19,21 +19,31 @@ export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
     if (!pet) return '😿 해당 펫을 찾을 수 없어요!';
 
     await api.patch(`/pet/${pet._id}/emotion`);
-    tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level, pet.avgBuyPrice, pet.quantity);
+    tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level, pet.exp, pet.avgBuyPrice, pet.quantity);
 
   }
 
   const onBuySubmit = async() => {
       const pet = await findPetByNickname(tamagochiInfo?.nickname);
+      if (!pet) {commandSet(2,'먹이주기_실페'); return;};
+
+      //새로운 주가,수량 저장
       const newPrice = Number(price);
       const newQuantity = Number(quantity);
+      
+      //경험치 계산
+      const newExp = pet.exp + 5;
+      const newLevel = calculateLevel(newExp);
 
-      if (!pet) {commandSet(2,'먹이주기_실페'); return;};
+
       try{
+
         const res = await api.patch(`/pet/${pet._id}`,
         {
           avgBuyPrice: ((pet.avgBuyPrice*pet.quantity)+(newPrice*newQuantity))/(pet.quantity+newQuantity),
           quantity: pet.quantity+newQuantity,
+          exp: pet.exp+5,
+          level: newLevel !== pet.level ? newLevel : pet.level,
         })
         setTamagochi();
         onFeedAction();
@@ -44,10 +54,14 @@ export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
   }
   const onSellSubmit = async() => {
     const pet = await findPetByNickname(tamagochiInfo?.nickname);
-
-    const newPrice = Number(price);
-    const newQuantity = Number(quantity);
     if (!pet) {commandSet(2,'먹이주기_실페'); return;};
+
+    const newQuantity = Number(quantity);
+
+    //경험치 계산
+    const newExp = pet.exp + 5;
+    const newLevel = calculateLevel(newExp);
+    
     if(pet?.quantity-newQuantity < 0){
       console.log("잘못된 표현");
       commandSet(2,'먹이주기_실패');
@@ -57,6 +71,8 @@ export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
       const res = await api.patch(`/pet/${pet._id}`,
       {
         quantity: pet.quantity-newQuantity,
+        exp: pet.exp+5,
+        level: newLevel !== pet.level ? newLevel : pet.level
       })
       setTamagochi();
       onFeedAction();

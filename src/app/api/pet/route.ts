@@ -40,6 +40,7 @@ export async function POST(req: NextRequest,) {
             nickname,
             avgBuyPrice,
             quantity: quantity || 1,
+
         });
 
         await pet.save();

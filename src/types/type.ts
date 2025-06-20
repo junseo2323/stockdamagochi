@@ -6,7 +6,11 @@ export type Pet = {
     avgBuyPrice: number;
     emotion: string;
     level: number;
+    exp: number;
+    createdAt: Date;
+    lastInteract?: Date;
 };
+
 
 export type AddFormData = {
 ticker: string;

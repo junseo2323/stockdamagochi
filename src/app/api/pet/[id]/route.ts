@@ -54,7 +54,7 @@ export async function PATCH(req: NextRequest, {params}: {params: {id: string}}) 
         }
         
         const petId = params.id;
-        const { nickname, avgBuyPrice, quantity } = await req.json();
+        const { nickname, avgBuyPrice, quantity, level, exp } = await req.json();
 
         try{
             const decoded = verifyToken(token);
@@ -69,6 +69,8 @@ export async function PATCH(req: NextRequest, {params}: {params: {id: string}}) 
                     ...(nickname && {nickname}),
                     ...(avgBuyPrice !== undefined && {avgBuyPrice}),
                     ...(quantity !== undefined && {quantity}),
+                    ...(exp !== undefined && {exp}),
+                    ...(level !== undefined && {level}),
                 },
                 {new: true}
             );

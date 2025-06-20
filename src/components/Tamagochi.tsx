@@ -1,6 +1,7 @@
 "use client";
 
 import {useAuth} from "@/contexts/AuthContext";
+import { levelThresholds } from "@/lib/api";
 
 export default function Tamagochi() {
   const {tamagochiMessage,tamagochiInfo,tamagochiMessageSetting} = useAuth();
@@ -40,6 +41,13 @@ export default function Tamagochi() {
   }
 
 
+  const currentLevelExpStart = levelThresholds[tamagochiInfo?.level - 1];
+  const nextLevelExp = levelThresholds[tamagochiInfo?.level] || levelThresholds[levelThresholds.length - 1];
+  const progressRatio = Math.min((tamagochiInfo?.exp - currentLevelExpStart) / (nextLevelExp - currentLevelExpStart), 1);
+
+  const progressWidth = `${progressRatio * 100}%`;
+
+
   return (
     <div   className="
     fixed
@@ -72,9 +80,12 @@ export default function Tamagochi() {
         <div className="m-auto mt-8">
           <p className="font-normal text-sm text-center">{tamagochiInfo?.level}LV</p>
           <div className="w-40 bg-white rounded-full h-5">
-            <div className=" h-5 bg-gradient-to-r from-[#837DFF]  to-[#FFFFFF] rounded-full w-30"></div>
+                <div
+              className="h-5 bg-gradient-to-r from-[#837DFF] to-[#FFFFFF] rounded-full transition-all duration-300"
+              style={{ width: progressWidth }}
+            ></div>
           </div>
-          <p className="font-normal text-sm text-center blur-[3px]">{tamagochiInfo?.level}LV</p>
+          <p className="font-normal text-sm text-center">{tamagochiInfo?.exp}EXP</p>
         </div>
       </div>
     </div>

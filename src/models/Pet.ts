@@ -8,7 +8,9 @@ const PetSchema = new Schema({
     quantity: {type: Number, default: 1},
     emotion: {type: String, default: "neutral"},
     level : {type: Number, default: 1},
-    
+    exp : {type: Number, default: 5},
+    createdAt: {type: Date, default: Date.now},
+    lastInteract : {type: Date}
 },{timestamps: true});
 
 const Pet = models.Pet || model('Pet', PetSchema);
