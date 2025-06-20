@@ -1,17 +1,26 @@
 import { useAuth } from "@/contexts/AuthContext";
-import api, { findPetByNickname } from "@/lib/api";
+import api, { fetchCurrentPrice, findPetByNickname } from "@/lib/api";
 import React, { useState } from "react"
 
 export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
-  const {tamagochiInfo,commandSet} = useAuth();
+  const {tamagochiInfo,commandSet,tamagochiSetting} = useAuth();
 
   const [price, setPrice] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
 
-    //고차함수 (화살표 여러번 사용) 블로그에 꼭 정리하기!!!!!
+  //고차함수 (화살표 여러번 사용) 블로그에 꼭 정리하기!!!!!
   const onChange = (type:string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       if(type==='price'){setPrice(e.target.value);}
       if(type==='quantity'){setQuantity(e.target.value);}
+  }
+
+  const setTamagochi = async() => {
+    const pet = await findPetByNickname(tamagochiInfo?.nickname);
+    if (!pet) return '😿 해당 펫을 찾을 수 없어요!';
+
+    await api.patch(`/pet/${pet._id}/emotion`);
+    tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level, pet.avgBuyPrice, pet.quantity);
+
   }
 
   const onBuySubmit = async() => {
@@ -26,6 +35,7 @@ export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
           avgBuyPrice: ((pet.avgBuyPrice*pet.quantity)+(newPrice*newQuantity))/(pet.quantity+newQuantity),
           quantity: pet.quantity+newQuantity,
         })
+        setTamagochi();
         onFeedAction();
         commandSet(2,'먹이주기_성공');
       }catch(err){
@@ -46,9 +56,10 @@ export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
     try{
       const res = await api.patch(`/pet/${pet._id}`,
       {
-        avgBuyPrice: ((pet.avgBuyPrice*pet.quantity)-(newPrice*newQuantity))/(pet.quantity-newQuantity),
         quantity: pet.quantity-newQuantity,
       })
+      setTamagochi();
+      onFeedAction();
       commandSet(2,'먹이주기_성공');
     }catch(err){
       console.error(err);

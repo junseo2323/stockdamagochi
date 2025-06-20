@@ -115,7 +115,7 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 			console.error(err);
 		}
 	}
-	
+
 	const userinfoSet = async() => {
 		try{
 			const res = await api.get("/user");
