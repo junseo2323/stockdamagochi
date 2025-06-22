@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import api, { calculateLevel, fetchCurrentPrice, findPetByNickname } from "@/lib/api";
+import api, { calculateLevel, expUp, findPetByNickname } from "@/lib/api";
 import React, { useState } from "react"
 
 export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
@@ -33,17 +33,13 @@ export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
       
       //경험치 계산
       const newExp = pet.exp + 5;
-      const newLevel = calculateLevel(newExp);
-
-
+      await expUp(pet._id,newExp,pet.level);
       try{
 
         const res = await api.patch(`/pet/${pet._id}`,
         {
           avgBuyPrice: ((pet.avgBuyPrice*pet.quantity)+(newPrice*newQuantity))/(pet.quantity+newQuantity),
-          quantity: pet.quantity+newQuantity,
-          exp: pet.exp+5,
-          level: newLevel !== pet.level ? newLevel : pet.level,
+          quantity: pet.quantity+newQuantity
         })
         setTamagochi();
         onFeedAction();
@@ -52,27 +48,34 @@ export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
         console.error(err);
       }
   }
+
   const onSellSubmit = async() => {
     const pet = await findPetByNickname(tamagochiInfo?.nickname);
     if (!pet) {commandSet(2,'먹이주기_실페'); return;};
-
+    
+    const newPrice = Number(price);
     const newQuantity = Number(quantity);
+    
+    
+
+    const newExp = (newPrice - pet.avgBuyPrice < 0)
+    ? 5 //손실시 +5EXP
+    : 10; //수익시 +10EXP
+    await expUp(pet._id,newExp,pet.level);
+
 
     //경험치 계산
-    const newExp = pet.exp + 5;
     const newLevel = calculateLevel(newExp);
     
     if(pet?.quantity-newQuantity < 0){
       console.log("잘못된 표현");
       commandSet(2,'먹이주기_실패');
     }
-
+    
     try{
       const res = await api.patch(`/pet/${pet._id}`,
       {
         quantity: pet.quantity-newQuantity,
-        exp: pet.exp+5,
-        level: newLevel !== pet.level ? newLevel : pet.level
       })
       setTamagochi();
       onFeedAction();

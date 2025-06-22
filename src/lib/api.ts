@@ -42,3 +42,17 @@ export function calculateLevel(exp: number) {
   }
   return 1;
 }
+
+//자동 레벨업 : (id/부여할 exp/현재 level)
+export async function expUp(_id: string, exp: number, level: number) {
+	const newLevel = calculateLevel(exp);
+	try{
+        const res = await api.patch(`/pet/${_id}`,
+        {
+          exp: exp,
+          level: newLevel !== level ? newLevel : level,
+        })
+      }catch(err){
+        console.error(err);
+	}
+}

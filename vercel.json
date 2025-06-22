@@ -1,0 +1,8 @@
+{
+    "cron": [
+      {
+        "path": "/api/cron/exp-daily",
+        "schedule": "0 0 * * *"
+      }
+    ]
+  }
