@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function Gloablnav(){
-    const {logout} = useAuth();
+    const {authActions} = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);         // 애니메이션 상태
     const [menuVisible, setMenuVisible] = useState(false);   // 실제 렌더링 여부
 
@@ -50,7 +50,7 @@ export default function Gloablnav(){
                             <p className="font-thin text-3xl text-center">프로필</p>
                         </Link>
                         <button
-                            onClick={logout}
+                            onClick={authActions.logout}
                         >
                             <p className="font-thin text-3xl text-center">로그아웃</p>
                         </button>

@@ -17,7 +17,7 @@ export default function Home() {
 		setRefreshKey(prev => prev + 1);
 	};
 	
-	const {user,userinfo,logout,loading } = useAuth();
+	const {user,authActions,loading } = useAuth();
 	const router = useRouter();
 
 	useEffect(() => {
@@ -30,7 +30,7 @@ export default function Home() {
 
 	const LogoutHandleEvent = async(e: React.FormEvent) => {
 		e.preventDefault();
-		await logout();
+		await authActions.logout();
 	}
 	
 	  if (user === null) {
@@ -40,7 +40,7 @@ export default function Home() {
 
   return (
    	<div>
-		  {userinfo&&
+		  {user&&
 		  <>
 				<div className="grid grid-rows-[1fr_1fr_0.3fr] h-screen">
 					<Gloablnav />

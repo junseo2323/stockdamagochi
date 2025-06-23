@@ -3,7 +3,7 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import api from "@/lib/api";
 import {useRouter} from "next/navigation";
-import { useFormState } from "react-dom";
+import {TamagochiInfoType, TamagochiInputType } from "@/types/type";
 
 interface CommandControl { //Nav => Command 컨트롤용 변수
 	page : number; 
@@ -16,36 +16,26 @@ interface User {
 	name : string;
 }
 
-interface TamagochiType { //다마고치 메세지
-	message : string;
-}
-
-interface TamagochiInfoType { //다마고치 셋팅정보
-	ticker : string;
-	emotion : string;
-	nickname : string;
-	level : number;
-	exp : number;
-	quantity: number;
-	avgBuyPrice : number;
-	rateofreturn: number;
-	nowPrice: number;
-}
-
 interface AuthContextType {
 	command : CommandControl | null;
 	user : User | null;
-	tamagochiMessage : TamagochiType | null;
 	tamagochiInfo : TamagochiInfoType | null;
 	loading : boolean;
-	userinfo : User | null;
-	login : (email: string, password: string) => Promise<void>;
-	register : (email: string, password: string, name: string) => Promise<void>;
-	logout : () => Promise<void>;
-	tamagochiMessageSetting : (message : string) => void;
-	tamagochiSetting : (ticker : string, emotion : string, nickname: string, level: number, exp: number, avgBuyPrice: number, quantity: number) => void;
+	authActions: {
+		login: (email: string, password: string) => Promise<void>;
+		register: (email: string, password: string, name: string) => Promise<void>;
+		logout: () => Promise<void>;
+	};	
+	tamagochiSetting : (data: TamagochiInputType)=> void;
 	commandSet : (page: number, index : string) => void;
 }
+
+
+
+type RateoType = {
+	rate: number;
+	price: number;
+};
 
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -53,10 +43,9 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 	const [command, setCommand] = useState<CommandControl | null>(null); 
 	const [user, setUser] = useState<User | null>(null);
-	const [userinfo, setUserinfo] = useState<User | null>(null);
-	const [tamagochiMessage, setTamagochiMessager] = useState<TamagochiType | null>(null);
 	const [tamagochiInfo, setTamagochiInfo] = useState<TamagochiInfoType|null>(null);
 	const [loading, setLoading] = useState(true);
+
 	const router = useRouter();
 	
 	const checkAuth = async() => {
@@ -76,10 +65,15 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 			index: index
 		})
 	}
-	type RateoType = {
-		rate: number;
-		price: number;
-	};
+
+	const tamagochiSetting = async(data: TamagochiInputType) => {
+		const rate = await calRateofreturn(data.avgBuyPrice, data.ticker);
+		setTamagochiInfo({
+			...data,
+			rateofreturn: rate.rate,
+			nowPrice: rate.price,
+		})
+	}
 
 	const calRateofreturn = async(avgPrice: number, ticker: string):Promise<RateoType> => {
 		try{
@@ -90,26 +84,18 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 			return {rate: parseFloat(rate.toFixed(2)), price: nowPrice};
 		}catch(error){
 			console.error(error);
+			return {rate: 0, price: 0};
 		}
-
-		return {rate: 0, price: 0};
 	}
 
 	const initTamagochi = async() => {
-		
 		try{
 			const res = await api.get('/pet');
 			const petdata = res.data.pets[0];
 			const rate = await calRateofreturn(petdata.avgBuyPrice, petdata.ticker);
 
 			setTamagochiInfo({
-				ticker : petdata.ticker,
-				emotion : petdata.emotion,
-				nickname : petdata.nickname,
-				level: petdata.level,
-				exp: petdata.exp,
-				quantity : petdata.quantity,
-				avgBuyPrice: petdata.avgBuyPrice,
+				...petdata,
 				rateofreturn: rate.rate,
 				nowPrice: rate.price,
 			})
@@ -118,69 +104,46 @@ export const AuthProvider= ({children} : {children: React.ReactNode}) => {
 		}
 	}
 
-	const userinfoSet = async() => {
-		try{
-			const res = await api.get("/user");
-			setUserinfo(res.data.user);
-		} catch{
-			setUserinfo(null);
+	
+	const authActions = {
+		login: async (email: string, password: string) => {
+		  await api.post("/auth/login", { email, password });
+		  await checkAuth();
+		  router.push("/home");
+		},
+	  
+		register: async (email: string, password: string, name: string) => {
+		  await api.post("/auth/signup", { name, email, password });
+		  await checkAuth();
+		  router.push("/home");
+		},
+	  
+		logout: async () => {
+		  await api.post("/auth/logout");
+		  setUser(null);
+		  router.push("/login");
 		}
 	};
-	
+
 	useEffect(()=>{
 		setCommand({
 			page : 1,
 			index : '홈_리스트'
 		});
-		checkAuth().then(userinfoSet);
+		checkAuth().then(checkAuth);
 		initTamagochi();
 	}, []);
-
 	
-	
-	const login = async (email: string, password: string) => {
-		await api.post("/auth/login", {email, password});
-		await checkAuth();
-		await userinfoSet();
-		router.push("/home");
-	};
-	
-	const register = async (email: string, password: string, name: string) => {
-		await api.post("/auth/signup", {name, email, password});
-		await checkAuth();
-		router.push("/home");
-	}
-	
-	const logout = async() => {
-		await api.post("/auth/logout");
-		setUser(null);
-		router.push("/login");
-	};
-
-	const tamagochiMessageSetting = ( message : string) => {
-		setTamagochiMessager({
-			message : message
-		})
-	}
-
-	const tamagochiSetting = async(ticker: string, emotion: string, nickname: string, level: number, exp: number, avgBuyPrice: number, quantity: number) => {
-		const rate = await calRateofreturn(avgBuyPrice, ticker);
-
-		setTamagochiInfo({
-			ticker : ticker,
-			emotion : emotion,
-			nickname : nickname,
-			quantity : quantity,
-			level: level,
-			exp: exp,
-			avgBuyPrice: avgBuyPrice,
-			rateofreturn: rate.rate,
-			nowPrice: rate.price,
-		})
-	}
 	
 	return(
-		<AuthContext.Provider value={{command,tamagochiMessage, tamagochiInfo, user, userinfo, loading, login, register, logout, tamagochiMessageSetting, tamagochiSetting, commandSet}}>
+		<AuthContext.Provider value={{
+			command, 
+			tamagochiInfo, 
+			user, 
+			loading, 
+			authActions, 
+			tamagochiSetting, 
+			commandSet}}>
 			{children}
 		</AuthContext.Provider>
 	);

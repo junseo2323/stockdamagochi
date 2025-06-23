@@ -27,13 +27,12 @@ export default function HomeModify({modifypet}: { modifypet: Pet|undefined}) {
         const id = modifypet?._id;     
         try{
             await api.patch(`/pet/${id}`, {
-            nickname : data.nickname,
-            avgBuyPrice: Number(data.avgBuyPriceStr),
-            quantity: Number(data.quantityStr),
+              nickname : data.nickname,
+              avgBuyPrice: Number(data.avgBuyPriceStr),
+              quantity: Number(data.quantityStr),
             });
             
-            commandSet(1,'수정하기_성공');
-
+            commandSet(1,'홈_리스트');
         } catch(err){
             console.log(err);
             commandSet(1,'수정하기_실패');

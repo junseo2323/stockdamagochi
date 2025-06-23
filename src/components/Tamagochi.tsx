@@ -4,7 +4,7 @@ import {useAuth} from "@/contexts/AuthContext";
 import { levelThresholds } from "@/lib/api";
 
 export default function Tamagochi() {
-  const {tamagochiMessage,tamagochiInfo,tamagochiMessageSetting} = useAuth();
+  const {tamagochiInfo} = useAuth();
   const ImageSetting = (ticker:string):string => {
     if(ticker === 'TSLA'){
       return '/TSLA.png';
@@ -17,33 +17,26 @@ export default function Tamagochi() {
     return '/etc.png'
   }  
 
-  const EmotionSetting = (emotion:string):string => {
-    if(emotion === '😊 happy 상태'){
-      return '지금 기쁜 상태에요😀';
-    }
-    if(emotion === '😐 감정 없음 상태 '){ //emotion 뒤에 의미없는 공백 저장된 것들 해결하기(어디서?문제가 됐는지도 파악하기)
-      return '지금은 평온한 상태에요😐';
-    }
-    if(emotion === '😢 sad 상태 '){
-      return '지금 우울한 상태에요😢';
-    }
+  const EmotionSetting = (emotion:number | undefined):string => {
+    
     return '지금 기쁜 상태에요😀';
   }
 
-  const RateColorSetting = (rate:number):string => {
+  const RateColorSetting = (rate:number | undefined):string => {
+    if (rate === undefined) return '';
     if(rate > 0){
-      return 'text-red-400'
+      return 'text-red-400';
     }
     if(rate < 0){
-      return 'text-blue-400'
+      return 'text-blue-400';
     }
-    return 'text-black'
+    return 'text-black';
   }
 
 
-  const currentLevelExpStart = levelThresholds[tamagochiInfo?.level - 1];
-  const nextLevelExp = levelThresholds[tamagochiInfo?.level] || levelThresholds[levelThresholds.length - 1];
-  const progressRatio = Math.min((tamagochiInfo?.exp - currentLevelExpStart) / (nextLevelExp - currentLevelExpStart), 1);
+  const currentLevelExpStart = levelThresholds[tamagochiInfo?.level ?? 0 - 1];
+  const nextLevelExp = levelThresholds[tamagochiInfo?.level ?? 0] || levelThresholds[levelThresholds.length - 1];
+  const progressRatio = Math.min((tamagochiInfo?.exp ?? 0 - currentLevelExpStart) / (nextLevelExp - currentLevelExpStart), 1);
 
   const progressWidth = `${progressRatio * 100}%`;
 

@@ -14,13 +14,13 @@ export async function fetchPets(): Promise<Pet[]> {
 }
   
 //닉네임을 활용해서 펫 정보 검색 
-export async function findPetByNickname(nickname: string): Promise<Pet | undefined> { 
+export async function findPetByNickname(nickname: string | undefined): Promise<Pet | undefined> { 
 	const pets = await fetchPets();
 	return pets.find(p => p.nickname === nickname);
 }
 
 //TICKER을 활용해서 해당 주가 검색
-export async function fetchCurrentPrice(ticker: string): Promise<number> {
+export async function fetchCurrentPrice(ticker: string | undefined): Promise<number> {
 	const res = await api.get(`/price`, { params: { ticker } });
 	return res.data.price;
 }
@@ -34,7 +34,8 @@ export const levelThresholds = [0, 15, 50, 100, 200];
 100~199 : LV4
 200 : LV5
  */
-export function calculateLevel(exp: number) {
+export function calculateLevel(exp: number | undefined) {
+  if(exp===undefined) return 1;
   for (let i = levelThresholds.length - 1; i >= 0; i--) {
     if (exp >= levelThresholds[i]) {
       return i + 1; // 레벨은 1부터 시작

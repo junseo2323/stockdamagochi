@@ -6,7 +6,7 @@ import {useState} from "react";
 import Link from 'next/link';
 
 export default function Register() {
-	const {register} = useAuth();
+	const {authActions} = useAuth();
 	
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -14,7 +14,7 @@ export default function Register() {
 	
 	const handleSubmit = async(e: React.FormEvent) => {
 		e.preventDefault();
-		await register(email, password, name);
+		await authActions.register(email, password, name);
 	};
 
   return (

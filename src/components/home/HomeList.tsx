@@ -1,7 +1,8 @@
 "use client"
 
 import { useAuth } from "@/contexts/AuthContext";
-import api, { findPetByNickname,fetchCurrentPrice } from "@/lib/api";
+import api, { findPetByNickname } from "@/lib/api";
+import { mapPetToInput } from "@/lib/utiltamagochi";
 import { Pet } from "@/types/type";
 
 export default function HomeList({pets , setModifypet }: { pets: Pet[]; setModifypet: React.Dispatch<React.SetStateAction<Pet|undefined>> }) {
@@ -9,11 +10,9 @@ export default function HomeList({pets , setModifypet }: { pets: Pet[]; setModif
     const handleOnClick = async(nickname: string) => {
         const pet = await findPetByNickname(nickname);
         if (!pet) return '😿 해당 펫을 찾을 수 없어요!';
-
-        const currentPrice = await fetchCurrentPrice(pet.ticker);
-        await api.patch(`/pet/${pet._id}/emotion`);
-        tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level, pet.exp, pet.avgBuyPrice, pet.quantity);
-      }
+        const data = mapPetToInput(pet);
+        await tamagochiSetting(data);
+    }
     return (
         <div>
           {/**다마고치 배경 */} 

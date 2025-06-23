@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import api, { calculateLevel, expUp, findPetByNickname } from "@/lib/api";
+import { mapPetToInput } from "@/lib/utiltamagochi";
 import React, { useState } from "react"
 
 export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
@@ -19,7 +20,9 @@ export default function Feed({ onFeedAction }: { onFeedAction: () => void }) {
     if (!pet) return '😿 해당 펫을 찾을 수 없어요!';
 
     await api.patch(`/pet/${pet._id}/emotion`);
-    tamagochiSetting(pet.ticker, pet.emotion, pet.nickname, pet.level, pet.exp, pet.avgBuyPrice, pet.quantity);
+    
+    const data = mapPetToInput(pet);
+    await tamagochiSetting(data);
 
   }
 

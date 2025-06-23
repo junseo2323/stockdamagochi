@@ -7,13 +7,13 @@ import Link from 'next/link';
 
 export default function Login() {
 	
-	const {login} = useAuth();
+	const {authActions } = useAuth();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	
 	const handleSubmit = async(e: React.FormEvent) => {
 		e.preventDefault();
-		await login(email, password);
+		await authActions.login(email, password);
 	};
 	
   return (

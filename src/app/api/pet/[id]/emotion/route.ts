@@ -9,12 +9,6 @@ import Pet from "@/models/Pet";
 const API_KEY = process.env.TWELVE_DATA_API_KEY;
 const BASE_URL = 'https://api.twelvedata.com/price';
 
-function getEmotionByRate(rate: number){
-    if(rate >= 10) return '😊 happy 상태';
-    if(rate >= -5) return '😐 감정 없음 상태 ';
-    return '😢 sad 상태 ';
-}
-
 export async function PATCH(req: NextRequest,{params}: {params: Promise<{ id: string }>}) {
             await connectToDatabase();
             //로그인 여부 확인
@@ -35,7 +29,7 @@ export async function PATCH(req: NextRequest,{params}: {params: Promise<{ id: st
                 }
 
                 const pet = await Pet.findOne({_id: petId, owner: user._id});
-                console.log('_id:', petId, 'owner:', user._id)
+
                 if (!pet) {
                     return NextResponse.json({message: 'pet not found'}, {status: 401});
                 }
@@ -49,12 +43,10 @@ export async function PATCH(req: NextRequest,{params}: {params: Promise<{ id: st
                   }
               
                 const rate = ((currentPrice - pet.avgBuyPrice) / pet.avgBuyPrice) * 100;
-                const newEmotion = getEmotionByRate(rate);
-
-                pet.emotion = newEmotion;
+                
                 await pet.save();
 
-                return NextResponse.json({ emotion: newEmotion, rate: rate.toFixed(2) }, { status: 200 });
+                return NextResponse.json({rate: rate.toFixed(2) }, { status: 200 });
 
             }catch(error){
                 console.error('Emotion update error:', error);

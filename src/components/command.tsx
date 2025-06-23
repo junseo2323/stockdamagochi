@@ -14,11 +14,12 @@ import Add from './add/Add';
 import AddSuccess from './add/AddSuccess';
 import FeedSuccess from './feed/FeedSuccess';
 
+
 export default function Command({ onFeedAction }: { onFeedAction: () => void }) {
     const {command} = useAuth()
 
-    const page = command?.page;
-    const index = command?.index;
+    const page:number = command?.page ?? 1;
+    const index:string = command?.index ?? '홈_리스트';
 
     const [pets, setPets] = useState<Pet[]>([]);
     const [addedpets, setAddedpets] = useState<Pet>();
