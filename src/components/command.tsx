@@ -13,6 +13,7 @@ import Feed from './feed/Feed';
 import Add from './add/Add';
 import AddSuccess from './add/AddSuccess';
 import FeedSuccess from './feed/FeedSuccess';
+import Interactive from './interactive/Interactive';
 
 
 export default function Command({ onFeedAction }: { onFeedAction: () => void }) {
@@ -66,6 +67,9 @@ export default function Command({ onFeedAction }: { onFeedAction: () => void }) 
         3: {
           '추가하기': () => <Add />,
           '추가하기_성공': () => <AddSuccess addedpets={addedpets} />,
+        },
+        4: {
+          '상호작용': () => <Interactive />,
         }
     };  
 

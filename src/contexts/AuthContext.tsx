@@ -30,8 +30,6 @@ interface AuthContextType {
 	commandSet : (page: number, index : string) => void;
 }
 
-
-
 type RateoType = {
 	rate: number;
 	price: number;

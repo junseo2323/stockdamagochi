@@ -48,3 +48,10 @@ export interface TamagochiInfoType { //다마고치 셋팅정보
 	nowPrice: number;
 }
 export type TamagochiInputType = Omit<TamagochiInfoType, 'rateofreturn' | 'nowPrice'>;
+
+
+export type InteractiveType = {
+  page: string;
+  row: number;
+  col: number;
+}
