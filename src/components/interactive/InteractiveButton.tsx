@@ -125,7 +125,7 @@ const EnterButton = ({page,row,col,setControlProps} : {page: string,row: number,
                         col: 0
                     });
                 }
-                if(row==1 && col==0){
+                if(row==1 && col==1){
                     setControlProps({
                         page: 'study',
                         row: 0,
